@@ -7,7 +7,9 @@ import os
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app)
+# Restrict CORS to local dev by default; allow override via env
+frontend_origin = os.environ.get('FRONTEND_ORIGIN', 'http://localhost:3000')
+CORS(app, resources={r"/api/*": {"origins": [frontend_origin]}})
 
 # Load the trained model and scaler
 model_path = 'model.pkl'
@@ -298,4 +300,6 @@ def get_stats():
         }), 400
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001) 
+    debug_enabled = os.environ.get('FLASK_DEBUG', '0') in ('1', 'true', 'True')
+    port = int(os.environ.get('PORT', '5001'))
+    app.run(debug=debug_enabled, port=port)
