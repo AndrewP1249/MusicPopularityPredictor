@@ -1,63 +1,53 @@
-# Spotify Song Popularity Prediction
+# Music Popularity Predictor
 
-This project explores and models Spotify audio metrics to predict whether a song is likely to be popular. It involves data inspection, exploration, preprocessing, and machine learning model testing/optimization.  
+Overview
+- This app implements the modeling work from `Backend/Main_Project.ipynb` end‑to‑end. In that analysis, multiple algorithms were trained and evaluated; the Extra Trees Classifier achieved the best held‑out accuracy for predicting Popular vs Not Popular, so it is the decision model deployed here.
+- Goal: classify whether a track is Popular or Not Popular using Spotify audio features only (no lyrics, no metadata).
+- Definition: Popular = Spotify popularity score ≥ 56; otherwise Not Popular. The classifier is trained to learn this label.
+- Additionally, a Random Forest Regressor provides a 0–100 “estimated popularity” number for context. It is shown in the UI but does not drive the final decision.
 
-## Dataset
+Data
+- ~18,800 tracks with 13 Spotify audio features:
+  acousticness, danceability, energy, instrumentalness, key, liveness,
+  loudness, mode, speechiness, tempo, time_signature, valence, duration_ms.
+- Ground truth shown as “Spotify popularity score.” The Popular/Not Popular label is derived from that score using the 56 threshold.
 
-- Source: Spotify audio metrics dataset (`song_data.csv`)  
-- Size: ~18,800 rows × 15 columns  
-- Key features:  
-  - Acousticness, Danceability, Energy, Instrumentalness  
-  - Loudness, Tempo, Speechiness, Valence  
-  - Duration, Key, Mode, Time Signature  
+User flow
+1. Search and select a track from the dataset.
+2. Choose your own guess (Popular / Not Popular).
+3. Results display:
+   - Extra Trees prediction: Popular / Not Popular (authoritative)
+   - Random Forest prediction: estimated popularity (0–100), when available
+   - Actual: Popular / Not Popular and the Spotify popularity score
+4. The threshold (≥ 56) is documented on the page for clarity.
 
-The target variable is `song_popularity`, which was binarized:  
-- `1` = Not Popular (below median, popularity < 56)  
-- `0` = Popular (≥ 56)  
+Models
+- Extra Trees Classifier: trained on the 13 audio features; used for the final decision.
+- Random Forest Regressor (optional): trained on the same features to estimate the 0–100 score.
 
-## Data Exploration
+Run locally
+```bash
+# Backend (Flask)
+cd Music_Model/Backend
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+python app.py   # http://localhost:5001
 
-- Checked for missing values and duplicates  
-- Visualized relationships with scatterplots and pairplots  
-- Identified multicollinearity (notably between energy and loudness)  
-- Generated a correlation matrix heatmap  
+# Frontend (React)
+cd ../Frontend
+npm install
+npm start       # http://localhost:3000
+```
 
-## Data Processing
+Artifacts
+- `Music_Model/Backend/model.pkl` — Extra Trees Classifier (decision model)
+- `Music_Model/Backend/scaler.pkl` — StandardScaler for the classifier
+- `Music_Model/Backend/model_regressor.pkl` (optional) — Random Forest Regressor
+- `Music_Model/Backend/scaler_regressor.pkl` (optional) — Scaler for the regressor
 
-- Dropped categorical column `song_name` (to avoid overfitting)  
-- Scaled features using StandardScaler  
-- Split dataset into training/testing sets (75/25)  
-- Binarized popularity for classification  
+Notes
+- Popularity is defined from the dataset’s score and the 56 threshold for a consistent binary decision.
+- Outputs depend solely on audio features; factors like release timing or marketing are out of scope.
 
-## Models Tested
-
-The following models were implemented using scikit-learn:  
-
-- Logistic Regression  
-- K-Nearest Neighbors (KNN)  
-- Decision Tree Classifier  
-- Multi-Layer Perceptron (Neural Network)  
-- Support Vector Classifier (SVC)  
-- Random Forest Classifier  
-- Gradient Boosting Classifier  
-- Extra Trees Classifier (best performing)  
-
-## Results
-
-| Model                    | Accuracy |
-|---------------------------|----------|
-| Logistic Regression       | ~59.7%   |
-| KNN                       | ~62.8%   |
-| Decision Tree             | ~68.9%   |
-| MLP (Neural Network)      | ~61.4%   |
-| Support Vector Classifier | ~61.3%   |
-| Random Forest             | ~73.4%   |
-| Gradient Boosting         | ~63.2%   |
-| Extra Trees Classifier    | **~73.8%** |
-
-The Extra Trees Classifier achieved the highest accuracy, performing approximately 35% better than similar baseline models published online.  
-
-## Additional Experiments
-
-- Hyperparameter tuning for Decision Tree (GridSearchCV) — minimal improvement  
-- Isolation Forest applied to remove outliers — did not yield performance gains 
+Demo
+- A short video is recommended: select a song → choose Popular/Not Popular → view Extra Trees prediction, Random Forest estimate, and the actual Spotify popularity score.

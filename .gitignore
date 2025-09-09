@@ -1,0 +1,20 @@
+# Models / artifacts
+*.pkl
+*.joblib
+
+# Backups / checkpoints
+*.bak
+*.ipynb.bak
+**/.ipynb_checkpoints/**
+
+# Envs / builds
+Backend/venv/
+Frontend/node_modules/
+Frontend/build/
+Frontend/dist/
+
+# Runtime
+Backend/user_feedback.csv
+
+# OS junk
+.DS_Store
