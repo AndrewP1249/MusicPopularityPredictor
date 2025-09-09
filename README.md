@@ -48,6 +48,3 @@ Artifacts
 Notes
 - Popularity is defined from the dataset’s score and the 56 threshold for a consistent binary decision.
 - Outputs depend solely on audio features; factors like release timing or marketing are out of scope.
-
-Demo
-- A short video is recommended: select a song → choose Popular/Not Popular → view Extra Trees prediction, Random Forest estimate, and the actual Spotify popularity score.

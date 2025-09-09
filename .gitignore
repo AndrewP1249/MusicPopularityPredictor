@@ -42,4 +42,6 @@ Thumbs.db
 # Local env files
 .env
 .env.*
+
+# Local notebooks
 Name_Count.ipynb
