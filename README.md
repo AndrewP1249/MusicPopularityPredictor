@@ -48,3 +48,6 @@ Artifacts
 Notes
 - Popularity is defined from the dataset’s score and the 56 threshold for a consistent binary decision.
 - Outputs depend solely on audio features; factors like release timing or marketing are out of scope.
+
+## Video Demo
+A short walkthrough of the app is available here: https://drive.google.com/file/d/1wGxFLzf0UuPPe5qpe3562LBWgPKdWkKh/view?usp=sharing
